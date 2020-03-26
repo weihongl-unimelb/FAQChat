@@ -27,6 +27,7 @@ export const QuestionTopicList = props =>(
 export const QuestionTopicEdit = props =>(
     <Edit title={<QuestionTopicTitle/>} {...props}>
         <SimpleForm>
+            <TextInput disabled source="id" />
             <TextInput source="name" />
             <ImageInput source="icon" label="Topic Picture" accept="image/*">
                 <ImageField source="url" />
@@ -38,6 +39,7 @@ export const QuestionTopicEdit = props =>(
 export const QuestionTopicCreate = props =>(
     <Create {...props}>
         <SimpleForm>
+            <TextInput disabled source="id" />
             <TextInput source="name" />
             <ImageInput source="icon" label="Topic Picture" accept="image/*">
                 <ImageField source="url" />

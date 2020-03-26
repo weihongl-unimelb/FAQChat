@@ -2,34 +2,34 @@ import React from 'react';
 import { List, Datagrid, TextField, DateField, ReferenceField, TextInput, ReferenceInput, 
     SelectInput,Edit, SimpleForm, Create, Filter, EditButton} from 'react-admin';
 
-const QuestionTitle = ({record})=>{
-    return <span>Edit {record ? `${record.description}` : ''}</span>
+const MessageTitle = ({record})=>{
+    return <span>Edit Message {record ? `${record.id}` : ''}</span>
 };
 
-const QuestionFilter = (props) =>(
+const MessageFilter = (props) =>(
     <Filter {...props}>
         <TextInput label="Search" source="q" alwaysOn />
     </Filter>
 );
 
-export const QuestionList = props =>(
-    <List filters={<QuestionFilter />}{...props}>
+export const MessageList = props =>(
+    <List filters={<MessageFilter />}{...props}>
         <Datagrid>
             <TextField source="id" />
-            <ReferenceField label="Question Topic" source="questionTopicId" reference="QuestionTopics">
-                <TextField source="name" />
-            </ReferenceField>
-            <TextField source="description" />
-            <TextField source="content" />
-            <TextField source="answer" />
-            <DateField source="updateTime" label="Date" />
+            
+            <TextField label={"Content Type"} source={"contents[0].type"} />
+            
+            <TextField label={"Content"} source={"contents[0].value"} />
+            <TextField label={"Answer Option"} source={"options[0].id"} />
+            <TextField label={"Next Answer Option"} source={"options[0].nextMessageId"} />
+
             <EditButton />
         </Datagrid>
     </List>
 );
 
 export const QuestionEdit = props =>(
-    <Edit title={<QuestionTitle />}{...props}>
+    <Edit title={<MessageTitle />}{...props}>
         <SimpleForm>
             <TextInput disabled source="id" />
             <ReferenceInput label="Question Topic" source="questionTopicId" reference="QuestionTopics">

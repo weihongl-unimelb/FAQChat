@@ -6,6 +6,7 @@ const myDataProvider = {
     ...dataProvider,
     update: (resource, params) => {
         if (resource !== 'QuestionTopics' || !params.data.icon) {
+            console.log("old update");
             // fallback to the default implementation
             return dataProvider.update(resource, params);
         }
@@ -28,7 +29,7 @@ const myDataProvider = {
         // const formerPictures = params.data.icon.filter(
         //     p => !(p.rawFile instanceof File)
         // );
-        console.log();
+        console.log("new update provider");
         return Promise.all(newPictures.map(convertFileToBase64))
             .then(base64Pictures =>
                 base64Pictures.map(picture64 => ({
@@ -41,10 +42,7 @@ const myDataProvider = {
                     ...params,
                     data: {
                         ...params.data,
-                        icon: [
-                            ...transformedNewPictures,
-                            ...formerPictures,
-                        ],
+                        icon: transformedNewPictures[0],
                     },
                     
                 })
