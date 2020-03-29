@@ -1,6 +1,9 @@
 import simpleRestProvider from 'ra-data-simple-rest';
 
-const dataProvider = simpleRestProvider('http://ocapi20200225090922.azurewebsites.net/faq');
+const LOCAL_DEBUG_API = "http://localhost:5000/faq";
+const REMOTE_DEBUG_API = "http://ocapi20200225090922.azurewebsites.net/faq";
+
+const dataProvider = simpleRestProvider(REMOTE_DEBUG_API);
 
 const myDataProvider = {
     ...dataProvider,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { List, Datagrid, TextField, ImageField, Edit, Create, 
     TextInput, SimpleForm, Filter, ImageInput, EditButton } from 'react-admin';
+import {EditToolbar, CreatToolbar} from '../component/toolbar';
 
 const QuestionTopicTitle = ({record})=>{
     return <span>Edit {record ? `${record.name}` : ''}</span>
@@ -26,7 +27,7 @@ export const QuestionTopicList = props =>(
 
 export const QuestionTopicEdit = props =>(
     <Edit title={<QuestionTopicTitle/>} {...props}>
-        <SimpleForm>
+        <SimpleForm toolbar={<EditToolbar/>}>
             <TextInput disabled source="id" />
             <TextInput source="name" />
             <ImageInput source="icon" label="Topic Picture" accept="image/*">
@@ -38,7 +39,7 @@ export const QuestionTopicEdit = props =>(
 
 export const QuestionTopicCreate = props =>(
     <Create {...props}>
-        <SimpleForm>
+        <SimpleForm toolbar={<CreatToolbar/>}>
             <TextInput disabled source="id" />
             <TextInput source="name" />
             <ImageInput source="icon" label="Topic Picture" accept="image/*">

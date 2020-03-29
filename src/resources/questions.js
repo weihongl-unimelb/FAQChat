@@ -1,36 +1,40 @@
 import React from 'react';
-import { List, Datagrid, TextField, DateField, ReferenceField, TextInput, ReferenceInput, 
-    SelectInput,Edit, SimpleForm, Create, Filter, EditButton} from 'react-admin';
+import { 
+    List, Datagrid, TextField, DateField, ReferenceField, 
+    TextInput, ReferenceInput, 
+    SelectInput,Edit, SimpleForm, Create, Filter, EditButton,
+} from 'react-admin';
+import {EditToolbar, CreatToolbar} from '../component/toolbar'
 
-const MessageTitle = ({record})=>{
-    return <span>Edit Message {record ? `${record.id}` : ''}</span>
+const QuestionTitle = ({record})=>{
+    return <span>Edit {record ? `${record.description}` : ''}</span>
 };
 
-const MessageFilter = (props) =>(
+const QuestionFilter = (props) =>(
     <Filter {...props}>
         <TextInput label="Search" source="q" alwaysOn />
     </Filter>
 );
 
-export const MessageList = props =>(
-    <List filters={<MessageFilter />}{...props}>
+export const QuestionList = props =>(
+    <List filters={<QuestionFilter />}{...props}>
         <Datagrid>
             <TextField source="id" />
-            
-            <TextField label={"Content Type"} source={"contents[0].type"} />
-            
-            <TextField label={"Content"} source={"contents[0].value"} />
-            <TextField label={"Answer Option"} source={"options[0].id"} />
-            <TextField label={"Next Answer Option"} source={"options[0].nextMessageId"} />
-
+            <ReferenceField label="Question Topic" source="questionTopicId" reference="QuestionTopics">
+                <TextField source="name" />
+            </ReferenceField>
+            <TextField source="description" />
+            <TextField source="content" />
+            <TextField source="answer" />
+            <DateField source="updateTime" label="Date" />
             <EditButton />
         </Datagrid>
     </List>
 );
 
 export const QuestionEdit = props =>(
-    <Edit title={<MessageTitle />}{...props}>
-        <SimpleForm>
+    <Edit title={<QuestionTitle />} {...props}>
+        <SimpleForm toolbar={<EditToolbar/>}>
             <TextInput disabled source="id" />
             <ReferenceInput label="Question Topic" source="questionTopicId" reference="QuestionTopics">
                 <SelectInput optionText="name" />
@@ -44,7 +48,7 @@ export const QuestionEdit = props =>(
 
 export const QuestionCreate = props =>(
     <Create {...props}>
-        <SimpleForm>
+        <SimpleForm toolbar={<CreatToolbar/>}>
             <TextInput disabled source="id" />
             <ReferenceInput label="Question Topic" source="questionTopicId" reference="QuestionTopics">
                 <SelectInput optionText="name" />
