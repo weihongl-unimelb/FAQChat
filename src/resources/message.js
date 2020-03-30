@@ -5,10 +5,11 @@ import {
     Edit, Create, Filter, 
     SimpleFormIterator, SimpleForm, TabbedForm, FormTab 
 } from 'react-admin';
+import RichTextInput from 'ra-input-rich-text'
 import {EditToolbar, CreatToolbar} from '../component/toolbar';
 
 const MessageTitle = ({record})=>{
-    return <span>Edit Message {record ? `${record.id}` : ''}</span>
+    return <span>{record ? `${record.description}` : 'Edit Message'}</span>
 };
 
 const MessageFilter = (props) =>(
@@ -50,7 +51,7 @@ export const MessageEdit = props =>(
                             {id: "Image", name: "Image"},
                             {id: "Link", name: "Link"}
                         ]}/>
-                        <TextInput source="value" label="Content Value"/>
+                        <TextInput multiline source="value" label="Content Value"/>
                     </SimpleFormIterator>
                 </ArrayInput>
             </FormTab>
@@ -60,7 +61,7 @@ export const MessageEdit = props =>(
                         <ReferenceInput label="Jump to message" source="nextMessageId" reference="StaticMessages">
                             <SelectInput optionText="description"/>
                         </ReferenceInput>
-                        <TextInput label="Hint" source="hint" />
+                        <TextInput multiline label="Hint" source="hint" />
                     </SimpleFormIterator>
                 </ArrayInput>
             </FormTab>
@@ -88,7 +89,7 @@ export const MessageCreate = props => (
                             {id: "Image", name: "Image"},
                             {id: "Link", name: "Link"}
                         ]}/>
-                        <TextInput source="value" label="Content Value"/>
+                        <TextInput multiline source="value" label="Content Value"/>
                     </SimpleFormIterator>
                 </ArrayInput>
             </FormTab>
@@ -98,7 +99,7 @@ export const MessageCreate = props => (
                         <ReferenceInput label="Jump to message" source="nextMessageId" reference="StaticMessages">
                             <SelectInput optionText="description"/>
                         </ReferenceInput>
-                        <TextInput label="Hint" source="hint" />
+                        <TextInput multiline label="Hint" source="hint" />
                     </SimpleFormIterator>
                 </ArrayInput>
             </FormTab>

@@ -1,9 +1,10 @@
 import React from 'react';
 import { 
     List, Datagrid, TextField, DateField, ReferenceField, 
-    TextInput, ReferenceInput, 
-    SelectInput,Edit, SimpleForm, Create, Filter, EditButton,
+    TextInput, ReferenceInput, SelectInput,
+    Edit, SimpleForm, Create, Filter, EditButton,
 } from 'react-admin';
+import RichTextInput from 'ra-input-rich-text';
 import {EditToolbar, CreatToolbar} from '../component/toolbar'
 
 const QuestionTitle = ({record})=>{
@@ -25,7 +26,6 @@ export const QuestionList = props =>(
             </ReferenceField>
             <TextField source="description" />
             <TextField source="content" />
-            <TextField source="answer" />
             <DateField source="updateTime" label="Date" />
             <EditButton />
         </Datagrid>
@@ -41,21 +41,21 @@ export const QuestionEdit = props =>(
             </ReferenceInput>
             <TextInput source="description" />
             <TextInput multiline source="content" />
-            <TextInput multiline source="answer" />
+            <RichTextInput source="answer"/>
         </SimpleForm>
     </Edit>
 );
 
 export const QuestionCreate = props =>(
     <Create {...props}>
-        <SimpleForm toolbar={<CreatToolbar/>}>
+        <SimpleForm toolbar={<CreatToolbar/>} redirect="list">
             <TextInput disabled source="id" />
             <ReferenceInput label="Question Topic" source="questionTopicId" reference="QuestionTopics">
                 <SelectInput optionText="name" />
             </ReferenceInput>
             <TextInput source="description" />
             <TextInput multiline source="content" />
-            <TextInput multiline source="answer" />
+            <RichTextInput source="answer"/>
         </SimpleForm>
     </Create>
 );
