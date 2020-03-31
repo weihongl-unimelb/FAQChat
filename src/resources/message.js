@@ -3,9 +3,8 @@ import {
     List, Datagrid, TextField, EditButton,
     TextInput, ReferenceInput, ArrayInput, SelectInput, 
     Edit, Create, Filter, 
-    SimpleFormIterator, SimpleForm, TabbedForm, FormTab 
+    SimpleFormIterator, TabbedForm, FormTab 
 } from 'react-admin';
-import RichTextInput from 'ra-input-rich-text'
 import {EditToolbar, CreatToolbar} from '../component/toolbar';
 
 const MessageTitle = ({record})=>{

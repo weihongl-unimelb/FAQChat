@@ -1,9 +1,17 @@
+import { fetchUtils } from 'react-admin';
 import simpleRestProvider from 'ra-data-simple-rest';
+import { APIServer } from '../config';
 
-const LOCAL_DEBUG_API = "http://localhost:5000/faq";
-const REMOTE_DEBUG_API = "http://ocapi20200225090922.azurewebsites.net/faq";
+const httpClient = (url, options = {}) => {
+    if (!options.headers) {
+        options.headers = new Headers({ Accept: 'application/json' });
+    }
+    const authToken = localStorage.getItem('authToken');
+    options.headers.set('Authorization', `Bearer ${authToken}`);
+    return fetchUtils.fetchJson(url, options);
+};
 
-const dataProvider = simpleRestProvider(REMOTE_DEBUG_API);
+const dataProvider = simpleRestProvider(APIServer, httpClient);
 
 const myDataProvider = {
     ...dataProvider,
