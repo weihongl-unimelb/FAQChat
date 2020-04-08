@@ -10,7 +10,12 @@ export default {
 };
 
 
-export const Default = () => <TopicCard topic={topicData} questions={questionsData} />;
+export const Default = () =>(
+   <div style={{background: '#EDF4FA', width: 500, height: 500, display: 'flex' }}>
+     <TopicCard topic={topicData} questions={questionsData} style={{margin: 'auto', alignSelf: 'center', width: 400, height: 300}} />
+   </div>
+   
+  );
 
 
 const topicData = {

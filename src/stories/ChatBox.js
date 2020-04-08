@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, Paper, Typography} from '@material-ui/core';
-import { Button, IconButton, Icon, Avatar } from '@material-ui/core';
+import { Button, IconButton, Icon, Avatar, ButtonGroup } from '@material-ui/core';
 import { Divider, SvgIcon } from '@material-ui/core';
 import { Fab, Badge } from '@material-ui/core';
 import InputBase from "@material-ui/core/InputBase";
@@ -74,11 +74,18 @@ const userStyle = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  input: {
+  inputContainer: {
     backgroundColor: colorScheme['500'],
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  input: {
+    backgroundColor: 'white', 
+    flex: 1, 
+    marginLeft: '10px',
+    marginTop: '8px', 
+    marginBottom: '8px',
   }
 }));
 
@@ -86,7 +93,9 @@ const userStyle = makeStyles(theme => ({
 export const ChatBox = props => {
   const {
     title,
-    initMessages,
+    initMessages=[],
+    initOptions=[],
+    api,
     ...rest
   } = props;
   const theme = useTheme();
@@ -95,7 +104,13 @@ export const ChatBox = props => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [chatBoxOpen, setChatBoxOpen] = useState(false);
   const [unreadMessageNum, setUnreadMessageNum] = useState(2);
-  const [messages, setMessages] = useState(initMessages? initMessages : []);
+  const [messages, setMessages] = useState([{msg: initMessages, fromUser: false, options: initOptions}]);
+  const [inputMessage, setInputMessage] = useState("");
+  const sendMessage = () => {
+    if (!inputMessage) return;
+    setMessages([...messages, {msg: [inputMessage], fromUser: true}])
+    setInputMessage('');
+  };
 
   return (
     <div>
@@ -128,12 +143,14 @@ export const ChatBox = props => {
             </div>
         </div>
         <div className={classes.messageContainer}>
-          <Message messages={initMessages}/>
-          <Message messages={"................."} fromUser={true}/>
+          {messages.map(m => <Message messages={m.msg} options={m.options} fromUser={m.fromUser}/>)}
         </div>
-        <div className={classes.input} Component="form">
-          <InputBase fullWidth multiline style={{backgroundColor: 'white', flex: 1, marginLeft: '10px', marginTop: '8px', marginBottom: '8px'}} />
-          <IconButton><SendIcon/></IconButton>
+        <div className={classes.inputContainer} Component="form">
+          <InputBase fullWidth multiline
+             className={classes.input} 
+             value={inputMessage}
+             onChange={event => {setInputMessage(event.target.value)}} />
+          <IconButton onClick={sendMessage} onKeyPress={e => {if(e.key === 'Enter' && e.shiftKey){sendMessage()}}}><SendIcon/></IconButton>
         </div>
       </Card>
       <ChatBoxSwitch onClick={() => {setChatBoxOpen(true); setUnreadMessageNum(0)}}
@@ -183,7 +200,7 @@ const useMessageStyle = makeStyles( theme => ({
 
 
 export function Message (props) {
-  const {avatar, messages, fromUser, ...rest} = props;
+  const {avatar, messages, fromUser, options=[], optionHandler,...rest} = props;
   const classes = useMessageStyle();
   let messageList;
   if (!Array.isArray(messages)) {
@@ -202,23 +219,12 @@ export function Message (props) {
       <Avatar src={avatar} className={classes.iconBox}/>
       <div className={classes.messageBox}>
         {messageItems}
+        <MessageOption options={options} onClick={optionHandler}/>
       </div>
       <div className={classes.endPlaceholder}></div>
     </div>
   );
 }
-
-export class Clock extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>Hello, world!</h1>
-        <h2>It is .</h2>
-      </div>
-    );
-  }
-}
-
 
 const useChatBoxSwitchStyles = makeStyles((theme) => ({
   root: {
@@ -239,5 +245,22 @@ export function ChatBoxSwitch({unreadMessageNum, onClick, hidden}) {
       </Badge>
       Open Chat Box
     </Fab>
+  );
+}
+
+
+export function MessageOption(props) {
+  const {options, onClick, ...rest} = props;
+  const optionList = options.map(opt => {
+    const {id, hint} = opt;
+    return (
+      <Button onClick={() => onClick(id)} key={id.toString()}>
+        {hint}
+      </Button>
+  )});
+  return (
+    <ButtonGroup orientation="vertical" color="inherit" aria-label="message option group">
+      {optionList}
+    </ButtonGroup>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { ChatBox, Clock, ChatBoxSwitch } from './ChatBox';
+import { ChatBox, ChatBoxSwitch, Message, MessageOption } from './ChatBox';
 
 export default {
   title: 'ChatBox',
@@ -8,10 +8,25 @@ export default {
   excludeStories: /.*Data$/,
 };
 
-export const Default = () => 
-  <ChatBox title="Click me" 
-           initMessages={['Hi Shane,', 
-                          'How about this chat box UI ?',
-                          'Any suggestions ?']}/>
-const EClock = () => <Clock></Clock>;
-export const EChatBoxSwitch = () => <ChatBoxSwitch unreadMessageNum={2}></ChatBoxSwitch>
+export const Default = () => <ChatBox title="Click me" initMessages={messages} initOptions={options} />
+
+export const DefaultChatBoxSwitch = () => <ChatBoxSwitch unreadMessageNum={2}></ChatBoxSwitch>;
+export const DefaultMessage = () => <Message messages={messages} options={options}/>;
+export const DefaultMessageOption = () => <MessageOption options={options}/>;
+
+const messages = ['Hi Shane,',
+                  'How about this chat box UI ?',
+                  'Any suggestions ?'];
+const options = [{id: 1, hint: 'Change a color'},
+                 {id: 2, hint: 'Box too big'},
+                 {id: 3, hint: 'Emm...'}];
+
+class ChatApi {
+  addr = "http://ocapi20200225090922.azurewebsites.net/faq"
+  currMessage
+  selectedOptionId
+  sendMessage = inputMessage => {
+
+  }
+
+}
