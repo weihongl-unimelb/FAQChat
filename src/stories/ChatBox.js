@@ -58,6 +58,7 @@ const userStyle = makeStyles(theme => ({
   headerButton: {
     alignSelf: 'center',
     color: colorScheme['100'],
+    textTransform: 'none',
   },
   menuDrawer: {
     backgroundColor: colorScheme['500'],
@@ -86,7 +87,30 @@ const userStyle = makeStyles(theme => ({
     marginLeft: '10px',
     marginTop: '8px', 
     marginBottom: '8px',
+  },
+  endChatHeaderContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: colorScheme['500'],
+    height: 55,
+    paddingLeft: 3,
+    paddingRight: 3,
+    justifyContent: 'center',
+  },
+  title:{
+    textAlign: 'center',
+    marginTop: '20vh',
+  },
+  confirm:{
+    backgroundColor: colorScheme['500'],
+    color: '#FFFFFF',
+    marginTop: '10vh',
+    width: '50vh',
+    alignSelf: 'center',
   }
+
+
 }));
 
 
@@ -101,6 +125,7 @@ export const ChatBox = props => {
   const theme = useTheme();
   const classes = userStyle(theme);
   
+  const [showEndChat, setShowEndChat] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const [chatBoxOpen, setChatBoxOpen] = useState(false);
   const [unreadMessageNum, setUnreadMessageNum] = useState(2);
@@ -112,9 +137,44 @@ export const ChatBox = props => {
     setInputMessage('');
   };
 
+  // close chat box 
+  function closeChat(){
+    setShowEndChat(true);
+  }
+  function goBack(){
+    setShowEndChat(false);
+  }
+  function endChat(){
+    window.location.reload();
+  }
+
+   
+
   return (
     <div>
-      <Card className={classes.root} style={{display: chatBoxOpen? 'flex': 'none'}}>
+      <Card className={classes.root} style={{display: showEndChat? 'flex': 'none'}}>
+        <div className={classes.endChatHeaderContainer}>
+          <Button className={classes.headerButton}>
+            <Typography variant="h5"> Chat </Typography>
+          </Button>
+        </div>
+        <CardContent>
+          <Typography className={classes.title} variant='h5'>
+            End Chat?
+          </Typography>
+          <Typography variant="body2" color='textSecondary'>
+          You can save a transcript after you end your chat. Click the header of this chat window, then click Save Transcript.
+          </Typography>
+        </CardContent>
+        <Button className={classes.confirm} onClick={endChat}>
+          Confirm
+        </Button>
+        <Button onClick={goBack}>
+          Go Back
+        </Button>
+      </Card>
+
+      <Card className={classes.root} style={{display: chatBoxOpen&&!showEndChat ? 'flex': 'none'}}>
         <div className={classes.headerContainer}>
           <IconButton aria-label="minimize" size="small" onClick={()=>{setChatBoxOpen(false)}}>
             <Icon style={{ transform: 'rotate(45deg)' }}>unfold_less</Icon>
@@ -122,11 +182,12 @@ export const ChatBox = props => {
           <Button className={classes.headerButton} onClick={() => {setShowDrawer(!showDrawer)}}>
             <Typography variant="h5"> { title } </Typography>
           </Button>
-          <IconButton aria-label="close" size="small">
+          <IconButton aria-label="close" size="small" onClick={closeChat}>
             <Icon>close</Icon>
           </IconButton>
         </div>
         <div className={classes.menuDrawer} style={{display: showDrawer ? 'flex': 'none'}}>
+          {/* TODO save transcript */}
           <div className={classes.drawerItem}>
             <IconButton style={{width: 120, height: 120}}>
               <SvgIcon style={{width: 100, height: 100}}>
@@ -135,7 +196,7 @@ export const ChatBox = props => {
             </IconButton>
             <p>Save Transcript</p>
           </div>
-          <div className={classes.drawerItem}>
+          <div className={classes.drawerItem} onClick={endChat}>
             <IconButton style={{width: 120, height: 120}}>
               <StopIcon style={{width: 100, height: 100}}/>
             </IconButton>
@@ -211,6 +272,7 @@ export function Message (props) {
   const messageClass = `${classes.message} ${fromUser? classes.userMessageColor: classes.agentMessageColor}`
   let messageItems = messageList.map((msg, idx) =>(
     <div key={idx.toString()} className={messageClass}>
+      {/* TODO cannot recognize enter */}
       {msg}
     </div>
   ));
@@ -254,6 +316,7 @@ export function MessageOption(props) {
   const optionList = options.map(opt => {
     const {id, hint} = opt;
     return (
+      // TODO
       <Button onClick={() => onClick(id)} key={id.toString()}>
         {hint}
       </Button>
