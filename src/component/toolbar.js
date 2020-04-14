@@ -8,9 +8,10 @@ export const EditToolbar = props => {
     return (
     <Toolbar {...props}>
         { permitted && <SaveButton/> }
+        
         <section style={{ marginLeft: 'auto' }}>
             <ListButton label="Cancel" to={`/${props.resource}`}/>
-            {permitted && <DeleteButton style={{ marginLeft: 'auto' }}/>}
+            {permitted && <DeleteButton resource={props.resource} record={props.record} to={`/${props.resource}`}/>}
         </section>
         
     </Toolbar>

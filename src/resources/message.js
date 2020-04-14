@@ -43,7 +43,7 @@ export const MessageEdit = props =>(
                 ]}/>
             </FormTab>
             <FormTab label="Message Contents">
-                <ArrayInput source="contents">
+                <ArrayInput source="messageContents">
                     <SimpleFormIterator>
                         <SelectInput source="type" label="Content Render Type" choices={[
                             {id: "Text", name: "Text"},
@@ -55,7 +55,7 @@ export const MessageEdit = props =>(
                 </ArrayInput>
             </FormTab>
             <FormTab label="Message Options">
-                <ArrayInput source="options" allowEmpty>
+                <ArrayInput source="messageOptions" allowEmpty>
                     <SimpleFormIterator>
                         <ReferenceInput label="Jump to message" source="nextMessageId" reference="StaticMessages">
                             <SelectInput optionText="description"/>
@@ -81,7 +81,7 @@ export const MessageCreate = props => (
                 ]}/>
             </FormTab>
             <FormTab label="Message Contents">
-                <ArrayInput source="contents">
+                <ArrayInput source="messageContents">
                     <SimpleFormIterator>
                         <SelectInput source="type" label="Content Render Type" choices={[
                             {id: "Text", name: "Text"},
@@ -93,7 +93,7 @@ export const MessageCreate = props => (
                 </ArrayInput>
             </FormTab>
             <FormTab label="Message Options">
-                <ArrayInput source="options" allowEmpty>
+                <ArrayInput source="messageOptions" allowEmpty>
                     <SimpleFormIterator>
                         <ReferenceInput label="Jump to message" source="nextMessageId" reference="StaticMessages">
                             <SelectInput optionText="description"/>
