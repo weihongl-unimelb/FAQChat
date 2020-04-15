@@ -21,10 +21,10 @@ export const QuestionList = props =>(
     <List filters={<QuestionFilter />}{...props}>
         <Datagrid>
             <TextField source="id" />
-            <ReferenceField label="Question Topic" source="questionTopicId" reference="QuestionTopics">
+            <TextField source="description" />
+            <ReferenceField label="Question Topic" source="questionTopicId" reference="QuestionTopics" link={false}>
                 <TextField source="name" />
             </ReferenceField>
-            <TextField source="description" />
             <TextField source="content" />
             <DateField source="updateTime" label="Date" />
             <EditButton />

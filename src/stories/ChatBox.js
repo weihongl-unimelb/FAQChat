@@ -23,6 +23,7 @@ const colorScheme = {
   '700': '#455a64',
   '800': '#37474f',
   '900': '#263238',
+  'white': '#ffffff',
 }
 
 const userStyle = makeStyles(theme => ({
@@ -57,7 +58,7 @@ const userStyle = makeStyles(theme => ({
   },
   headerButton: {
     alignSelf: 'center',
-    color: colorScheme['100'],
+    color: colorScheme['white'],
     textTransform: 'none',
   },
   menuDrawer: {
@@ -70,7 +71,7 @@ const userStyle = makeStyles(theme => ({
     paddingTop: 20
   },
   drawerItem: {
-    color: colorScheme['100'],
+    color: colorScheme['white'],
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -253,8 +254,9 @@ const useMessageStyle = makeStyles( theme => ({
     color: 'black',
   },
   agentMessageColor: {
-    color: colorScheme['100'], 
+    color: colorScheme['white'], 
     backgroundColor: colorScheme['600'], 
+    fontFamily: 'Arial',
   },
   
 }));
