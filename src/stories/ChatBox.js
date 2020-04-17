@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Paper, Typography} from '@material-ui/core';
 import { Button, IconButton, Icon, Avatar, ButtonGroup } from '@material-ui/core';
 import { Divider, SvgIcon } from '@material-ui/core';
@@ -109,6 +109,10 @@ const userStyle = makeStyles(theme => ({
     marginTop: '10vh',
     width: '50vh',
     alignSelf: 'center',
+  },
+  goBack:{
+    width: '50vh',
+    alignSelf: 'center',
   }
 
 
@@ -149,6 +153,15 @@ export const ChatBox = props => {
     window.location.reload();
   }
 
+  function saveNewMsg(data){
+    let newMsg = {};
+    newMsg.msg = data.messageContents;
+    newMsg.fromUser = false;
+    newMsg.options = data.messageOptions;
+    let newMsgList = messages.concat(newMsg);
+    setMessages(newMsgList);
+    console.log(newMsgList);
+  }
    
 
   return (
@@ -170,7 +183,7 @@ export const ChatBox = props => {
         <Button className={classes.confirm} onClick={endChat}>
           Confirm
         </Button>
-        <Button onClick={goBack}>
+        <Button onClick={goBack} className={classes.goBack}>
           Go Back
         </Button>
       </Card>
@@ -205,7 +218,7 @@ export const ChatBox = props => {
             </div>
         </div>
         <div className={classes.messageContainer}>
-          {messages.map(m => <Message messages={m.msg} options={m.options} fromUser={m.fromUser}/>)}
+          {messages.map(m => <Message messages={m.msg} options={m.options} fromUser={m.fromUser} onMsgChange={data=>{saveNewMsg(data);}}/>)}
         </div>
         <div className={classes.inputContainer} Component="form">
           <InputBase fullWidth multiline
@@ -256,7 +269,7 @@ const useMessageStyle = makeStyles( theme => ({
   agentMessageColor: {
     color: colorScheme['white'], 
     backgroundColor: colorScheme['600'], 
-    fontFamily: 'Arial',
+    fontFamily: 'Arial, Helvetica, sans-serif',
   },
   
 }));
@@ -278,12 +291,15 @@ export function Message (props) {
       {msg}
     </div>
   ));
+
+  
+
   return (
     <div className={classes.root} style={{flexDirection: fromUser? "row-reverse": "row"}}>
       <Avatar src={avatar} className={classes.iconBox}/>
       <div className={classes.messageBox}>
         {messageItems}
-        <MessageOption options={options} onClick={optionHandler}/>
+        <MessageOption options={options} onResult={data => { props.onMsgChange(data);}}/>
       </div>
       <div className={classes.endPlaceholder}></div>
     </div>
@@ -315,11 +331,20 @@ export function ChatBoxSwitch({unreadMessageNum, onClick, hidden}) {
 
 export function MessageOption(props) {
   const {options, onClick, ...rest} = props;
+
+  const fetchData = async (id) => {
+    const API = 'https://ocapi20200225090922.azurewebsites.net/faq/Staticmessages/' + id;
+    const response = await fetch(API);
+    const data = await response.json();
+    let newOptions = data;
+    props.onResult(newOptions);
+  }
+
   const optionList = options.map(opt => {
-    const {id, hint} = opt;
+    const {id, hint, nextMessageId} = opt;
     return (
       // TODO
-      <Button onClick={() => onClick(id)} key={id.toString()}>
+      <Button onClick={() => fetchData(nextMessageId)} key={id.toString()}>
         {hint}
       </Button>
   )});
