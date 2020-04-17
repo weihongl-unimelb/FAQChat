@@ -122,9 +122,8 @@ const userStyle = makeStyles(theme => ({
 export const ChatBox = props => {
   const {
     title,
-    initMessages=[],
-    initOptions=[],
-    api,
+    initMessageId,
+    fetchMessage,
     ...rest
   } = props;
   const theme = useTheme();
@@ -134,7 +133,7 @@ export const ChatBox = props => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [chatBoxOpen, setChatBoxOpen] = useState(false);
   const [unreadMessageNum, setUnreadMessageNum] = useState(2);
-  const [messages, setMessages] = useState([{msg: initMessages, fromUser: false, options: initOptions}]);
+  const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const sendMessage = () => {
     if (!inputMessage) return;
@@ -153,14 +152,9 @@ export const ChatBox = props => {
     window.location.reload();
   }
 
-  function saveNewMsg(data){
-    let newMsg = {};
-    newMsg.msg = data.messageContents;
-    newMsg.fromUser = false;
-    newMsg.options = data.messageOptions;
-    let newMsgList = messages.concat(newMsg);
-    setMessages(newMsgList);
-    console.log(newMsgList);
+  async function onClickOption(nextMessageId){
+    const nextMessage = await fetchMessage(nextMessageId);
+    setMessages([...messages, {msg: nextMessage.messageContents.map(obj => obj.value), fromUser: false, options: nextMessage.messageOptions}])
   }
    
 
@@ -218,7 +212,7 @@ export const ChatBox = props => {
             </div>
         </div>
         <div className={classes.messageContainer}>
-          {messages.map(m => <Message messages={m.msg} options={m.options} fromUser={m.fromUser} onMsgChange={data=>{saveNewMsg(data);}}/>)}
+          {messages.map(m => <Message messages={m.msg} options={m.options} fromUser={m.fromUser} onClickOption={onClickOption}/>)}
         </div>
         <div className={classes.inputContainer} Component="form">
           <InputBase fullWidth multiline
@@ -228,7 +222,13 @@ export const ChatBox = props => {
           <IconButton onClick={sendMessage} onKeyPress={e => {if(e.key === 'Enter' && e.shiftKey){sendMessage()}}}><SendIcon/></IconButton>
         </div>
       </Card>
-      <ChatBoxSwitch onClick={() => {setChatBoxOpen(true); setUnreadMessageNum(0)}}
+      <ChatBoxSwitch onClick={async () => {
+                      if (!messages.length) {
+                        await onClickOption(initMessageId);
+                      }
+                      setChatBoxOpen(true);
+                      setUnreadMessageNum(0);
+                    }}
                      unreadMessageNum={unreadMessageNum} 
                      hidden={chatBoxOpen}/>
     </div>
@@ -276,7 +276,7 @@ const useMessageStyle = makeStyles( theme => ({
 
 
 export function Message (props) {
-  const {avatar, messages, fromUser, options=[], optionHandler,...rest} = props;
+  const {avatar, messages, fromUser, options=[], onClickOption,...rest} = props;
   const classes = useMessageStyle();
   let messageList;
   if (!Array.isArray(messages)) {
@@ -299,7 +299,7 @@ export function Message (props) {
       <Avatar src={avatar} className={classes.iconBox}/>
       <div className={classes.messageBox}>
         {messageItems}
-        <MessageOption options={options} onResult={data => { props.onMsgChange(data);}}/>
+        <MessageOption options={options} onClickOption={onClickOption}/>
       </div>
       <div className={classes.endPlaceholder}></div>
     </div>
@@ -330,21 +330,13 @@ export function ChatBoxSwitch({unreadMessageNum, onClick, hidden}) {
 
 
 export function MessageOption(props) {
-  const {options, onClick, ...rest} = props;
-
-  const fetchData = async (id) => {
-    const API = 'https://ocapi20200225090922.azurewebsites.net/faq/Staticmessages/' + id;
-    const response = await fetch(API);
-    const data = await response.json();
-    let newOptions = data;
-    props.onResult(newOptions);
-  }
+  const {options, onClickOption, ...rest} = props;
 
   const optionList = options.map(opt => {
     const {id, hint, nextMessageId} = opt;
     return (
       // TODO
-      <Button onClick={() => fetchData(nextMessageId)} key={id.toString()}>
+      <Button onClick={async () => await onClickOption(nextMessageId)} key={id.toString()}>
         {hint}
       </Button>
   )});
@@ -353,4 +345,11 @@ export function MessageOption(props) {
       {optionList}
     </ButtonGroup>
   );
+}
+
+const fetchData = async (id) => {
+  const API = 'https://ocapi20200225090922.azurewebsites.net/faq/Staticmessages/' + id;
+  const response = await fetch(API);
+  const data = await response.json();
+  return data;
 }
